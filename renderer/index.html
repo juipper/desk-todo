@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'" />
+<title>待办</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="shell">
+
+  <!-- ============ 收起态 ============ -->
+  <div id="collapsed" class="bar" hidden>
+    <div class="bar-drag">
+      <svg class="ring ring-sm" viewBox="0 0 40 40">
+        <circle class="ring-track" cx="20" cy="20" r="15"></circle>
+        <circle class="ring-fill" id="c-ring" cx="20" cy="20" r="15"
+                stroke-dasharray="94.25" stroke-dashoffset="94.25"></circle>
+      </svg>
+      <div class="bar-text">
+        <span class="bar-count" id="c-count">0/0</span>
+        <span class="bar-next" id="c-next">今天没有待办</span>
+      </div>
+    </div>
+    <button class="bar-expand" id="btn-expand" title="展开 (Ctrl+Alt+T)">
+      <svg viewBox="0 0 24 24" width="14" height="14"><path d="M6 15l6-6 6 6" /></svg>
+    </button>
+  </div>
+
+  <!-- ============ 展开态 ============ -->
+  <div id="expanded" class="panel">
+    <header class="titlebar">
+      <span class="brand">待办</span>
+      <div class="tb-actions">
+        <button class="icon-btn" id="btn-settings" title="设置">
+          <svg viewBox="0 0 24 24" width="13" height="13"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z" /><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5v.2a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1.1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z" /></svg>
+        </button>
+        <button class="icon-btn" id="btn-collapse" title="收起">
+          <svg viewBox="0 0 24 24" width="13" height="13"><path d="M6 9l6 6 6-6" /></svg>
+        </button>
+      </div>
+    </header>
+
+    <section class="today">
+      <svg class="ring" viewBox="0 0 56 56">
+        <circle class="ring-track" cx="28" cy="28" r="23"></circle>
+        <circle class="ring-fill" id="ring" cx="28" cy="28" r="23"
+                stroke-dasharray="144.5" stroke-dashoffset="144.5"></circle>
+      </svg>
+      <div class="today-text">
+        <span id="today-count">0 / 0</span>
+        <small id="today-sub">今天没有待办</small>
+      </div>
+    </section>
+
+    <section class="composer">
+      <input id="new-title" type="text" placeholder="加一件待办，回车创建" autocomplete="off" />
+      <div class="chips">
+        <button class="chip" id="chip-due" data-empty="1">截止</button>
+        <button class="chip" id="chip-prio" data-empty="1">优先级</button>
+      </div>
+    </section>
+
+    <section class="filters" id="filters">
+      <button class="fchip active" data-list="all">全部</button>
+      <button class="fchip" data-list="work">工作</button>
+      <button class="fchip" data-list="life">生活</button>
+      <button class="fchip" data-list="temp">临时</button>
+    </section>
+
+    <main class="list" id="list"></main>
+
+    <footer class="foot">
+      <button class="fold" id="fold-backlog">待排期 <span id="backlog-count">0</span> 项</button>
+      <button class="fold" id="fold-done">已完成 <span id="done-count">0</span> 项</button>
+    </footer>
+
+    <!-- 设置 -->
+    <div class="sheet" id="settings" hidden>
+      <div class="sheet-head">
+        <span>设置</span>
+        <button class="icon-btn" id="btn-close-settings">
+          <svg viewBox="0 0 24 24" width="12" height="12"><path d="M6 6l12 12M18 6l-12 12" /></svg>
+        </button>
+      </div>
+      <div class="sheet-body">
+        <div class="row">
+          <label>主题</label>
+          <div class="seg" id="theme-seg">
+            <button data-theme="light">浅色</button>
+            <button data-theme="dark">深色</button>
+            <button data-theme="system">跟随系统</button>
+          </div>
+        </div>
+        <div class="row">
+          <label>开机自启</label>
+          <button class="switch" id="sw-autostart" aria-pressed="false"><span></span></button>
+        </div>
+        <div class="row col">
+          <label>数据</label>
+          <div class="btn-row">
+            <button class="ghost" id="btn-export">导出 JSON</button>
+            <button class="ghost" id="btn-import">导入 JSON</button>
+            <button class="ghost" id="btn-reveal">打开目录</button>
+          </div>
+          <small class="hint" id="data-path">%APPDATA%\DeskTodo\tasks.json</small>
+        </div>
+        <div class="row col">
+          <label>关于</label>
+          <small class="hint">待办 v1.0 · Ctrl+Alt+T 显示/隐藏 · 拖标题栏移动</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- 截止浮层 -->
+    <div class="popover" id="due-pop" hidden>
+      <div class="pop-quick">
+        <button data-quick="today">今天 18:00</button>
+        <button data-quick="tomorrow">明天 18:00</button>
+        <button data-quick="clear">不设截止</button>
+      </div>
+      <div class="pop-custom">
+        <input type="date" id="due-date" />
+        <input type="time" id="due-time" value="18:00" />
+        <button class="ghost" id="due-apply">确定</button>
+      </div>
+    </div>
+
+    <!-- 优先级浮层 -->
+    <div class="popover" id="prio-pop" hidden>
+      <button data-prio="3"><i class="dot p3"></i>高</button>
+      <button data-prio="2"><i class="dot p2"></i>中</button>
+      <button data-prio="1"><i class="dot p1"></i>低</button>
+      <button data-prio="0"><i class="dot p0"></i>无</button>
+    </div>
+  </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
