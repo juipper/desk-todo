@@ -2,7 +2,15 @@
 
 一个常驻 Windows 桌面的极简待办浮窗：无边框、置顶、透明圆角，抬眼就能看见今天还剩几件事。
 
-## 怎么启动
+## 下载
+
+不想折腾环境，直接下 Releases 里的 **`todo.exe`**（免安装，双击即用，可放 U 盘）：
+
+https://github.com/juipper/desk-todo/releases/latest
+
+首次双击可能触发 SmartScreen「已保护你的电脑」，点「更多信息 → 仍要运行」即可（exe 未做代码签名）。
+
+## 从源码跑
 
 双击 **`启动.bat`**。首次运行会自动安装 Electron（约 100MB，走国内镜像），之后秒开。
 
@@ -55,7 +63,7 @@ assets/icon.png      图标
 npm run dist
 ```
 
-产物在 `dist\weixin.exe`（portable，双击即用，可放 U 盘；窗口里显示的仍叫“待办”）。
+产物在 `dist\todo.exe`（portable，双击即用，可放 U 盘；窗口里显示的仍叫“待办”）。
 
 ## 明确不做（v1）
 
